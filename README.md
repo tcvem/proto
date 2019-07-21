@@ -1,2 +1,2 @@
-# proto
+# protobuf
 protocol buffers
