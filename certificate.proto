@@ -1,11 +1,13 @@
 syntax = "proto3";
-package api.tcvem;
+package certificate;
 
 import "google/protobuf/timestamp.proto";
 import "github.com/infobloxopen/atlas-app-toolkit/rpc/resource/resource.proto";
 import "github.com/infobloxopen/protoc-gen-gorm/options/gorm.proto";
 import "github.com/infobloxopen/protoc-gen-gorm/types/types.proto";
 import "github.com/infobloxopen/atlas-app-toolkit/query/collection_operators.proto";
+
+option go_package = "github.com/tcvem/backend/pkg/pb;pb";
 
 service CertificateService {
   option (gorm.server).autogen = true;
