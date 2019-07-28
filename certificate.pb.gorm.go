@@ -14,14 +14,12 @@ import field_mask1 "google.golang.org/genproto/protobuf/field_mask"
 import gorm1 "github.com/jinzhu/gorm"
 import gorm2 "github.com/infobloxopen/atlas-app-toolkit/gorm"
 import ptypes1 "github.com/golang/protobuf/ptypes"
-import query1 "github.com/infobloxopen/atlas-app-toolkit/query"
 import resource1 "github.com/infobloxopen/atlas-app-toolkit/gorm/resource"
 
 import fmt "fmt"
 import math "math"
 import _ "github.com/golang/protobuf/ptypes/timestamp"
 import _ "github.com/infobloxopen/atlas-app-toolkit/rpc/resource"
-import _ "github.com/infobloxopen/atlas-app-toolkit/query"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = fmt.Errorf
@@ -454,23 +452,23 @@ func DefaultApplyFieldMaskCertficate(ctx context.Context, patchee *Certficate, p
 }
 
 // DefaultListCertficate executes a gorm list call
-func DefaultListCertficate(ctx context.Context, db *gorm1.DB, f *query1.Filtering, s *query1.Sorting, p *query1.Pagination, fs *query1.FieldSelection) ([]*Certficate, error) {
+func DefaultListCertficate(ctx context.Context, db *gorm1.DB) ([]*Certficate, error) {
 	in := Certficate{}
 	ormObj, err := in.ToORM(ctx)
 	if err != nil {
 		return nil, err
 	}
 	if hook, ok := interface{}(&ormObj).(CertficateORMWithBeforeListApplyQuery); ok {
-		if db, err = hook.BeforeListApplyQuery(ctx, db, f, s, p, fs); err != nil {
+		if db, err = hook.BeforeListApplyQuery(ctx, db); err != nil {
 			return nil, err
 		}
 	}
-	db, err = gorm2.ApplyCollectionOperators(ctx, db, &CertficateORM{}, &Certficate{}, f, s, p, fs)
+	db, err = gorm2.ApplyCollectionOperators(ctx, db, &CertficateORM{}, &Certficate{}, nil, nil, nil, nil)
 	if err != nil {
 		return nil, err
 	}
 	if hook, ok := interface{}(&ormObj).(CertficateORMWithBeforeListFind); ok {
-		if db, err = hook.BeforeListFind(ctx, db, f, s, p, fs); err != nil {
+		if db, err = hook.BeforeListFind(ctx, db); err != nil {
 			return nil, err
 		}
 	}
@@ -481,7 +479,7 @@ func DefaultListCertficate(ctx context.Context, db *gorm1.DB, f *query1.Filterin
 		return nil, err
 	}
 	if hook, ok := interface{}(&ormObj).(CertficateORMWithAfterListFind); ok {
-		if err = hook.AfterListFind(ctx, db, &ormResponse, f, s, p, fs); err != nil {
+		if err = hook.AfterListFind(ctx, db, &ormResponse); err != nil {
 			return nil, err
 		}
 	}
@@ -497,13 +495,13 @@ func DefaultListCertficate(ctx context.Context, db *gorm1.DB, f *query1.Filterin
 }
 
 type CertficateORMWithBeforeListApplyQuery interface {
-	BeforeListApplyQuery(context.Context, *gorm1.DB, *query1.Filtering, *query1.Sorting, *query1.Pagination, *query1.FieldSelection) (*gorm1.DB, error)
+	BeforeListApplyQuery(context.Context, *gorm1.DB) (*gorm1.DB, error)
 }
 type CertficateORMWithBeforeListFind interface {
-	BeforeListFind(context.Context, *gorm1.DB, *query1.Filtering, *query1.Sorting, *query1.Pagination, *query1.FieldSelection) (*gorm1.DB, error)
+	BeforeListFind(context.Context, *gorm1.DB) (*gorm1.DB, error)
 }
 type CertficateORMWithAfterListFind interface {
-	AfterListFind(context.Context, *gorm1.DB, *[]CertficateORM, *query1.Filtering, *query1.Sorting, *query1.Pagination, *query1.FieldSelection) error
+	AfterListFind(context.Context, *gorm1.DB, *[]CertficateORM) error
 }
 type CertificateServiceDefaultServer struct {
 	DB *gorm1.DB
@@ -619,7 +617,7 @@ func (m *CertificateServiceDefaultServer) List(ctx context.Context, in *ListCert
 			return nil, err
 		}
 	}
-	res, err := DefaultListCertficate(ctx, db, in.Filter, in.OrderBy, in.Paging, in.Fields)
+	res, err := DefaultListCertficate(ctx, db)
 	if err != nil {
 		return nil, err
 	}
