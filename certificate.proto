@@ -1,6 +1,7 @@
 syntax = "proto3";
 package certificate;
 
+import "google/protobuf/timestamp.proto";
 import "github.com/infobloxopen/atlas-app-toolkit/rpc/resource/resource.proto";
 import "github.com/infobloxopen/protoc-gen-gorm/options/gorm.proto";
 import "github.com/infobloxopen/atlas-app-toolkit/query/collection_operators.proto";
@@ -21,13 +22,15 @@ service CertificateService {
 message Certficate {
     option (gorm.opts) = {
         ormable: true,
-        multi_account: true
     };
     atlas.rpc.Identifier id = 1 [(gorm.field).tag = {type: "uuid" primary_key: true}];
-    string name = 2;
-    string host = 3;
-    string port = 4;
-    string notes = 5;
+    google.protobuf.Timestamp created_at = 2;
+    google.protobuf.Timestamp updated_at = 3;
+    google.protobuf.Timestamp deleted_at = 4;
+    string name = 5;
+    string host = 6;
+    string port = 7;
+    string notes = 8;
 }
 
 message CreateCertficateRequest {
