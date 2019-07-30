@@ -21,7 +21,7 @@ service CertificateService {
 message Certficate {
     option (gorm.opts) = {
         ormable: true,
-	table: "certificates",
+	table: "certficates",
     };
     atlas.rpc.Identifier id = 1 [(gorm.field).tag = {type: "uuid" primary_key: true}];
     google.protobuf.Timestamp created_at = 2;
