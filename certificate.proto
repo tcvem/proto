@@ -27,8 +27,8 @@ message Certficate {
     google.protobuf.Timestamp updated_at = 3;
     google.protobuf.Timestamp deleted_at = 4;
     string name = 5;
-    string host = 6;
-    string port = 7;
+    string host = 6 [(gorm.field).tag = {not_null: true}];
+    string port = 7 [(gorm.field).tag = {not_null: true}];
     string notes = 8;
 }
 
